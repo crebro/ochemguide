@@ -48,7 +48,7 @@ mathfontname=mathsf]{mhchem}
 
   return (
     <main className="flex flex-col items-center gap-[32px] row-start-2 mx-auto justify-between min-h-full">
-      <div>
+      <div className='flex flex-col h-full justify-center'>
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">{title}</h1>
         <div id="reaction-item" dangerouslySetInnerHTML={{ __html: svg }}></div>
       </div>

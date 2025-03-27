@@ -3,26 +3,47 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
-model Post {
-  id        String     @default(cuid()) @id
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  String?
+model Reaction {
+  id                      String                    @id @default(cuid())
+  name                    String
+  content                 String                    @db.Text
+  createdAt               DateTime                  @default(now())
+  FunctionalGroupRelation FunctionalGroupRelation[]
+}
+
+model FunctionalGroup {
+  id                      String                    @id @default(cuid())
+  name                    String
+  createdAt               DateTime                  @default(now())
+  FunctionalGroupRelation FunctionalGroupRelation[]
+}
+
+enum OrganicRelationType {
+  REACTANT
+  PRODUCT
+}
+
+model FunctionalGroupRelation {
+  id                String              @id @default(cuid())
+  reaction          Reaction            @relation(fields: [reactionId], references: [id])
+  reactionId        String
+  functionalGroup   FunctionalGroup     @relation(fields: [functionalGroupId], references: [id])
+  functionalGroupId String
+  relationType      OrganicRelationType
+  createdAt         DateTime            @default(now())
 }
 
 model User {
-  id            String       @default(cuid()) @id
-  name          String?
-  email         String?   @unique
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  posts         Post[]
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?  @unique
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
   @@map(name: "users")
 }
