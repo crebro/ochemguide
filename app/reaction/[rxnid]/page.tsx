@@ -56,8 +56,6 @@ functionalGroupId: {
         }
     });
 
-    console.log(followingReactions);
-
     if (!reaction) {
         redirect("/error");
     }

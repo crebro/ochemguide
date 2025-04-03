@@ -2,6 +2,7 @@
 import { useState, useRef } from 'react';
 import axios from 'axios';
 import { useDebounceCallback } from 'usehooks-ts';
+import toast from 'react-hot-toast';
 
 function LivePreview() {
   const [title, setTitle] = useState<string>("Hell Vollhard Zelinsky");
@@ -10,7 +11,6 @@ function LivePreview() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const fetchContent = async () => {
-    console.log("happening");
     if (!textareaRef.current) {
       return;
     }
@@ -38,7 +38,13 @@ mathfontname=mathsf]{mhchem}
       }
       \\end{document} 
       `;
-    const response = await axios.post("http://localhost:8080", fullRequest, { headers: { 'Content-Type': "text/plain" } });
+
+    const rendererEndpoint = process.env.NEXT_PUBLIC_LATEX_RENDERER;
+    if (!rendererEndpoint) {
+      toast.error("Renderer endpoint not set");
+      return;
+    }
+    const response = await axios.post(rendererEndpoint, fullRequest, { headers: { 'Content-Type': "text/plain" } });
     if (response.data.svg) {
       setSVG(response.data.svg);
     }
